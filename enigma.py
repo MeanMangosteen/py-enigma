@@ -16,21 +16,18 @@ def inverse_dict(original):
     return inversed
 
 def make_json_file():
-    rotors_json = open("rotors.json", 'r')
+    rotors_json = open("reflectors.json", 'r')
     rotors = json.load(rotors_json)
 
     for rotor_num in rotors.keys():
         # wires forward
         wires_forward = dict(zip(string.ascii_uppercase, list(rotors[rotor_num]['wires'])))
         wires_reverse = inverse_dict(wires_forward) # inverse the dictionary
-        notch = rotors[rotor_num]['notch']
 
         enigma[rotor_num] = {}
-        enigma[rotor_num]['wires_forward'] = wires_forward
-        enigma[rotor_num]['wires_reverse'] = wires_reverse
-        enigma[rotor_num]['notch'] = notch
+        enigma[rotor_num]['wires'] = wires_forward
 
-    new_json = open("rotors_v2.json", 'w')
+    new_json = open("reflectors_v2.json", 'w')
     json.dump(enigma, new_json)
     print("done!")
 
