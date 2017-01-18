@@ -15,7 +15,7 @@ def inverse_dict(original):
         inversed[value] = key   # reverse key and value
     return inversed
 
-def setup():
+def make_json_file():
     rotors_json = open("rotors.json", 'r')
     rotors = json.load(rotors_json)
 
@@ -25,10 +25,14 @@ def setup():
         wires_reverse = inverse_dict(wires_forward) # inverse the dictionary
         notch = rotors[rotor_num]['notch']
 
-        rotor = Rotor(wires_forward, wires_reverse, notch)
-        enigma
+        enigma[rotor_num] = {}
+        enigma[rotor_num]['wires_forward'] = wires_forward
+        enigma[rotor_num]['wires_reverse'] = wires_reverse
+        enigma[rotor_num]['notch'] = notch
 
-        print(wires_forward)
+    new_json = open("rotors_v2.json", 'w')
+    json.dump(enigma, new_json)
+    print("done!")
 
 
 
@@ -36,7 +40,9 @@ def setup():
 # print out converted text from map
 
 if __name__ == "__main__":
-    setup()
+    make_json_file()
+    for num in enigma.keys():
+        print(num)
 #TODO: with 3 rotors
 #TODO: with reflector
 #TODO: with inverse encryption
