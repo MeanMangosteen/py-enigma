@@ -6,11 +6,9 @@ import json
 import string
 
 enigma = {}  # this is the machine
-# TODO: rotors argument
-# TODO: ring setting argument
-# TODO: initial position argument
-# TODO: reflector argument
-# TODO: plug board argument
+output = ""
+message = input("Enter Text! \n>> ").upper()
+
 
 def setup():
     # opening file stuff
@@ -42,12 +40,12 @@ def setup():
     # populating plugboard
     for i in range(0, len(settings['plugboard']), 2):
         letter_left = settings['plugboard'][i]
-        letter_right = settings['plugboard'][i+1]
+        letter_right = settings['plugboard'][i + 1]
         enigma['plugboard'][letter_left] = letter_right
         enigma['plugboard'][letter_right] = letter_left
 
     # settings initial pos and ring setting stuff
-    for rotor, ring_letter, pos_letter\
+    for rotor, ring_letter, pos_letter \
             in zip(enigma['rotors'], settings['ring_setting'], settings['initial_position']):
         rotor['setting'] = ring_letter
         rotor['position'] = pos_letter
@@ -63,7 +61,6 @@ def rotor_encrypt(letter, rotor_list, reverse=False):
         pos_offset, setting_offset = get_offsets(rotor)
         # setting the letter to be the letter which the signal enters
         wiring_offset = pos_offset - setting_offset
-        print("the wiring offset is: " + str(wiring_offset))
         letter = shift_letter(letter, wiring_offset)
 
         # get rotor map depending on direction of signal
@@ -72,12 +69,10 @@ def rotor_encrypt(letter, rotor_list, reverse=False):
         else:
             rotor_map = rotor['wires_forward']
         # update the letter to encrypt for next rotor
-        print("letter before: " + letter)
         letter = rotor_map[letter]
         letter = shift_letter(letter, setting_offset)
         ring_offset = 26 - pos_offset
         letter = shift_letter(letter, ring_offset)
-        print("letter after: " + letter)
     # letter is now e
     return letter
 
@@ -104,16 +99,8 @@ def turn_rotors(rotor_list):
     # turn the marked rotors
     for rotor in rotor_list:
         if 'turn' in rotor and rotor['turn']:
-            print('we are turning a rotor')
             # turn the rotor letter by one
             rotor['position'] = shift_letter(rotor['position'], 1)
-
-
-    # TODO: delete, below is for debugging purposes
-    print ("Rotor settings are:")
-    for rotor in rotor_list:
-        print(rotor['position'] + " ", end='')
-    print()
 
 
 def reflector(letter):
@@ -143,13 +130,10 @@ def shift_letter(letter, num_shifts):
 def get_offsets(rotor):
     positional_offset = ord(rotor['position']) - ord('A')
     setting_offset = ord(rotor['setting']) - ord('A')
-    print("get_offsets: pos: {}, setting {}".format(positional_offset, setting_offset))
     return positional_offset, setting_offset
 
 
 if __name__ == "__main__":
-    output = ""
-    message = input("Enter Text! \n>> ").upper()
     setup()
     for letter in message:
         turn_rotors(enigma['rotors'])

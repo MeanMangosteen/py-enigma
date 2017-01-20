@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import ttk
 import json
-from sys import executable
 import subprocess
 
 
@@ -57,18 +56,18 @@ class Menu(ttk.Frame):
         self.reflector_c = ttk.Button(self.unselected_rotors, text=c, command=lambda: self.reflector_click(c)).grid(column=5, row=1)
 
         self.ring_setting_text = ttk.Label(self.unselected_rotors, text='Ring Setting').grid(column=6, row=0)
-        self.ring_setting = ttk.Entry(self.unselected_rotors, textvariable=self.ring_setting_str).grid(column=6, row=1)
+        self.ring_setting = ttk.Entry(self.unselected_rotors, textvariable=self.ring_setting_str, font="-weight bold").grid(column=6, row=1)
 
         self.initial_setting_text = ttk.Label(self.unselected_rotors, text='Initial Position').grid(column=6, row=2)
-        self.initial_setting = ttk.Entry(self.unselected_rotors, textvariable=self.initial_pos_str).grid(column=6, row=3)
+        self.initial_setting = ttk.Entry(self.unselected_rotors, textvariable=self.initial_pos_str, font="-weight bold").grid(column=6, row=3)
 
         self.plugboard_text = ttk.Label(self.unselected_rotors, text='Plugboard').grid(column=0, row=4, columnspan=6)
         self.plugboard = ttk.Entry(self.unselected_rotors, width=40, textvariable=self.plugboard_str).grid(column=0, row=5, columnspan=5)
 
         self.start_btn = ttk.Button(self.unselected_rotors, text='Start', command=lambda: self.start()).grid(column=6, row=4, columnspan=2)
 
-        self.selected_rotors_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_rotors_str).grid(column=0, columnspan=2, row=6, pady=10)
-        self.selected_reflector_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_reflector_str).grid(column=0, columnspan=2, row=7, pady=10)
+        self.selected_rotors_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_rotors_str).grid(column=0, columnspan=2, row=6, pady=10, sticky=W)
+        self.selected_reflector_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_reflector_str).grid(column=0, columnspan=2, row=7, pady=10, sticky=W)
 
     def reflector_click(self, refl):
         self.selected_reflector = refl
