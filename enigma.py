@@ -8,6 +8,7 @@ import argparse
 
 # TODO: delete selected rotors, this should be determined by args
 selected_rotors = ['I', 'II', 'III']
+selected_reflector = 'B'
 enigma = {}  # this is the machine
 # TODO: rotors argument
 # TODO: ring setting argument
@@ -24,10 +25,11 @@ def setup():
 
     # TODO: store selected rotors in a list in 'enigma'
     enigma['all_rotors'] = rotors
-    enigma['reflectors'] = reflectors
+    enigma['all_reflectors'] = reflectors
     enigma['rotors'] = []
     for rotor in selected_rotors:
         enigma['rotors'].append(enigma['all_rotors'][rotor])
+    enigma['reflector'] = enigma['all_reflectors'][selected_reflector]
 
     enigma['plugboard'] = ''
 
@@ -101,6 +103,10 @@ def turn_rotors(rotor_list):
     print()
 
 
+def reflector(letter):
+    return enigma['reflector'][letter]
+
+
 # TODO: throw exception if letter not with 'A' and 'Z'
 def shift_letter(letter, num_shifts):
     # cleaning num_shifts
@@ -120,6 +126,7 @@ def get_offsets(rotor):
     print("get_offsets: pos: {}, setting {}".format(positional_offset, setting_offset))
     return positional_offset, setting_offset
 
+
 def set_ring_setting():
     for rotor in enigma['rotors']:
         rotor['setting'] = 'A'
@@ -134,6 +141,8 @@ if __name__ == "__main__":
     a = rotor_encrypt('A', enigma['rotors'])
     print("now revesring")
     a = rotor_encrypt('S', enigma['rotors'], reverse=True)
+
+    print("testing reflector: " + reflector('F'))
 # TODO: with 3 rotors
 # TODO: with reflector
 # TODO: with inverse encryption
