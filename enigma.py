@@ -34,7 +34,14 @@ def setup():
         enigma['rotors'].append(enigma['all_rotors'][rotor])
     enigma['reflector'] = enigma['all_reflectors'][selected_reflector]
 
-    enigma['plugboard'] = settings['plugboard']
+    enigma['plugboard'] = {}
+
+    # i is 0..10 stepping in 2's
+    for i in range(0, len(settings['plugboard']), 2):
+        letter_left = settings['plugboard'][i]
+        letter_right = settings['plugboard'][i+1]
+        enigma['plugboard'][letter_left] = letter_right
+        enigma['plugboard'][letter_right] = letter_left
 
     for rotor, ring_letter, pos_letter\
             in zip(enigma['rotors'], settings['ring_setting'], settings['initial_position']):
@@ -117,6 +124,12 @@ def turn_rotors(rotor_list):
 def reflector(letter):
     return enigma['reflector'][letter]
 
+def plugboard(letter):
+    if letter in enigma['plugboard']:
+        return enigma['plugboard'][letter]
+    else:
+        return letter
+
 
 # TODO: throw exception if letter not with 'A' and 'Z'
 def shift_letter(letter, num_shifts):
@@ -138,18 +151,17 @@ def get_offsets(rotor):
     return positional_offset, setting_offset
 
 
-
-# print out converted text from map
-
 if __name__ == "__main__":
     output = ""
     message = "ILBDAAMTAZ"
     setup()
     for letter in message:
         turn_rotors(enigma['rotors'])
+        letter = plugboard(letter)
         letter = rotor_encrypt(letter, enigma['rotors'])
         letter = reflector(letter)
         print("now revesring")
         letter = rotor_encrypt(letter, enigma['rotors'], reverse=True)
+        letter = plugboard(letter)
         output += letter
     print("final message: " + output)
