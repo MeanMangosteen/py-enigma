@@ -37,12 +37,18 @@ def setup():
 # read text from user
 # TODO: should take in list of rotor objects not rotor strings
 def rotor_encrypt(letter, rotor_list, reverse=False):
-
     # reverse the 'rotor_list', letter goes
     # through last rotor first in forward direction
     if not reverse:
         rotor_list = list(reversed(rotor_list))
     for rotor in rotor_list:
+        # positional and setting offsets
+        pos_offset, setting_offset = get_offsets(rotor)
+        # setting the letter to be the letter which the signal enters
+        wiring_offset = pos_offset - setting_offset
+        print("the wiring offset is: " + str(wiring_offset))
+        letter = shift_letter(letter, wiring_offset)
+
         # get rotor map depending on direction of signal
         if reverse:
             rotor_map = rotor['wires_reverse']
@@ -51,6 +57,9 @@ def rotor_encrypt(letter, rotor_list, reverse=False):
         # update the letter to encrypt for next rotor
         print("letter before: " + letter)
         letter = rotor_map[letter]
+        letter = shift_letter(letter, setting_offset)
+        ring_offset = 26 - pos_offset
+        letter = shift_letter(letter, ring_offset)
         print("letter after: " + letter)
     # letter is now e
     return letter
@@ -104,9 +113,11 @@ def shift_letter(letter, num_shifts):
     return letter
 
 
+# TODO: make sure all offsets are postive? throw exception
 def get_offsets(rotor):
     positional_offset = ord(rotor['position']) - ord('A')
     setting_offset = ord(rotor['setting']) - ord('A')
+    print("get_offsets: pos: {}, setting {}".format(positional_offset, setting_offset))
     return positional_offset, setting_offset
 
 def set_ring_setting():
@@ -120,9 +131,9 @@ def set_ring_setting():
 if __name__ == "__main__":
     setup()
     turn_rotors(enigma['rotors'])
-    a = rotor_encrypt('A', list(reversed(enigma['rotors'])))
+    a = rotor_encrypt('A', enigma['rotors'])
     print("now revesring")
-    a = rotor_encrypt('T', enigma['rotors'], reverse=True)
+    a = rotor_encrypt('S', enigma['rotors'], reverse=True)
 # TODO: with 3 rotors
 # TODO: with reflector
 # TODO: with inverse encryption
