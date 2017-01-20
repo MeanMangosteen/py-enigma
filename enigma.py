@@ -127,6 +127,7 @@ def get_offsets(rotor):
     return positional_offset, setting_offset
 
 
+
 def set_ring_setting():
     for rotor in enigma['rotors']:
         rotor['setting'] = 'A'
