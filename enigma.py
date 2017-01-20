@@ -136,13 +136,14 @@ def set_ring_setting():
 # print out converted text from map
 
 if __name__ == "__main__":
+    output = ""
+    message = "ILBDAAMTAZ"
     setup()
-    turn_rotors(enigma['rotors'])
-    a = rotor_encrypt('A', enigma['rotors'])
-    print("now revesring")
-    a = rotor_encrypt('S', enigma['rotors'], reverse=True)
-
-    print("testing reflector: " + reflector('F'))
-# TODO: with 3 rotors
-# TODO: with reflector
-# TODO: with inverse encryption
+    for letter in message:
+        turn_rotors(enigma['rotors'])
+        letter = rotor_encrypt(letter, enigma['rotors'])
+        letter = reflector(letter)
+        print("now revesring")
+        letter = rotor_encrypt(letter, enigma['rotors'], reverse=True)
+        output += letter
+    print("final message: " + output)
