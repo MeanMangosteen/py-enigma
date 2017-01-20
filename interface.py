@@ -3,6 +3,9 @@
 from tkinter import *
 from tkinter import ttk
 import json
+from sys import executable
+import subprocess
+
 
 rotor_list = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
 
@@ -82,6 +85,10 @@ class Menu(ttk.Frame):
         settings_file = open('settings.json', 'w')
         json.dump(self.final_settings, settings_file)
         settings_file.close()
+
+        subprocess.call(["python3", "enigma.py"])
+
+        input('Enter to exit from this launcher script...')
 
 if __name__ == "__main__":
     root = Tk()

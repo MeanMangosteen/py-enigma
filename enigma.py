@@ -4,11 +4,7 @@
 
 import json
 import string
-import argparse
 
-# TODO: delete selected rotors, this should be determined by args
-selected_rotors = ['I', 'II', 'III']
-selected_reflector = 'B'
 enigma = {}  # this is the machine
 # TODO: rotors argument
 # TODO: ring setting argument
@@ -17,45 +13,46 @@ enigma = {}  # this is the machine
 # TODO: plug board argument
 
 def setup():
+    # opening file stuff
     rotors_json = open('rotors_v2.json', 'r')
     reflectors_json = open('reflectors_v2.json', 'r')
     settings_json = open('settings.json', 'r')
 
+    # loading json from file stuff
     rotors = json.load(rotors_json)
     reflectors = json.load(reflectors_json)
     settings = json.load(settings_json)
 
-    # TODO: store selected rotors in a list in 'enigma'
+    # populate info on all rotors and reflectors avail stuff
     enigma['all_rotors'] = rotors
     enigma['all_reflectors'] = reflectors
     enigma['rotors'] = []
-    # add all selected rotors to enigma machine
+
+    # rotor stuff -- loading selected rotors into machine
     for rotor in settings['rotors']:
         enigma['rotors'].append(enigma['all_rotors'][rotor])
+
+    # reflector stuff
+    selected_reflector = settings['reflector']
     enigma['reflector'] = enigma['all_reflectors'][selected_reflector]
 
+    # plugboard stuff
     enigma['plugboard'] = {}
 
-    # i is 0..10 stepping in 2's
+    # populating plugboard
     for i in range(0, len(settings['plugboard']), 2):
         letter_left = settings['plugboard'][i]
         letter_right = settings['plugboard'][i+1]
         enigma['plugboard'][letter_left] = letter_right
         enigma['plugboard'][letter_right] = letter_left
 
+    # settings initial pos and ring setting stuff
     for rotor, ring_letter, pos_letter\
             in zip(enigma['rotors'], settings['ring_setting'], settings['initial_position']):
         rotor['setting'] = ring_letter
         rotor['position'] = pos_letter
 
-    # for rotor in enigma['rotors']:
-    #     rotor['setting'] = 'A'
-    #     rotor['position'] = 'A'
-    # set_ring_setting()
 
-
-# read text from user
-# TODO: should take in list of rotor objects not rotor strings
 def rotor_encrypt(letter, rotor_list, reverse=False):
     # reverse the 'rotor_list', letter goes
     # through last rotor first in forward direction
@@ -85,8 +82,6 @@ def rotor_encrypt(letter, rotor_list, reverse=False):
     return letter
 
 
-# TODO: takes a list of rotor objects
-
 def turn_rotors(rotor_list):
     last_element = len(rotor_list) - 1
     first_element = 0
@@ -94,7 +89,7 @@ def turn_rotors(rotor_list):
     # initialise by setting all rotors not to turn
     # except rightmost rotor, this always turns
     for rotor in rotor_list:
-        rotor['turn'] = False;
+        rotor['turn'] = False
     rotor_list[-1]['turn'] = True  # rightmost rotor always turns
     # mark rotors which need to be turned
 
@@ -123,6 +118,7 @@ def turn_rotors(rotor_list):
 
 def reflector(letter):
     return enigma['reflector'][letter]
+
 
 def plugboard(letter):
     if letter in enigma['plugboard']:
@@ -153,14 +149,13 @@ def get_offsets(rotor):
 
 if __name__ == "__main__":
     output = ""
-    message = "ILBDAAMTAZ"
+    message = input("Enter Text! \n>> ")
     setup()
     for letter in message:
         turn_rotors(enigma['rotors'])
         letter = plugboard(letter)
         letter = rotor_encrypt(letter, enigma['rotors'])
         letter = reflector(letter)
-        print("now revesring")
         letter = rotor_encrypt(letter, enigma['rotors'], reverse=True)
         letter = plugboard(letter)
         output += letter
