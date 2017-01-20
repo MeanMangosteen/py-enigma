@@ -19,21 +19,32 @@ enigma = {}  # this is the machine
 def setup():
     rotors_json = open('rotors_v2.json', 'r')
     reflectors_json = open('reflectors_v2.json', 'r')
+    settings_json = open('settings.json', 'r')
 
     rotors = json.load(rotors_json)
     reflectors = json.load(reflectors_json)
+    settings = json.load(settings_json)
 
     # TODO: store selected rotors in a list in 'enigma'
     enigma['all_rotors'] = rotors
     enigma['all_reflectors'] = reflectors
     enigma['rotors'] = []
-    for rotor in selected_rotors:
+    # add all selected rotors to enigma machine
+    for rotor in settings['rotors']:
         enigma['rotors'].append(enigma['all_rotors'][rotor])
     enigma['reflector'] = enigma['all_reflectors'][selected_reflector]
 
-    enigma['plugboard'] = ''
+    enigma['plugboard'] = settings['plugboard']
 
-    set_ring_setting()
+    for rotor, ring_letter, pos_letter\
+            in zip(enigma['rotors'], settings['ring_setting'], settings['initial_position']):
+        rotor['setting'] = ring_letter
+        rotor['position'] = pos_letter
+
+    # for rotor in enigma['rotors']:
+    #     rotor['setting'] = 'A'
+    #     rotor['position'] = 'A'
+    # set_ring_setting()
 
 
 # read text from user
@@ -126,12 +137,6 @@ def get_offsets(rotor):
     print("get_offsets: pos: {}, setting {}".format(positional_offset, setting_offset))
     return positional_offset, setting_offset
 
-
-
-def set_ring_setting():
-    for rotor in enigma['rotors']:
-        rotor['setting'] = 'A'
-        rotor['position'] = 'A'
 
 
 # print out converted text from map
