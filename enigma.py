@@ -37,6 +37,7 @@ def setup():
 # read text from user
 # TODO: should take in list of rotor objects not rotor strings
 def rotor_encrypt(letter, rotor_list, reverse=False):
+
     # reverse the 'rotor_list', letter goes
     # through last rotor first in forward direction
     if not reverse:
@@ -103,6 +104,10 @@ def shift_letter(letter, num_shifts):
     return letter
 
 
+def get_offsets(rotor):
+    positional_offset = ord(rotor['position']) - ord('A')
+    setting_offset = ord(rotor['setting']) - ord('A')
+    return positional_offset, setting_offset
 
 def set_ring_setting():
     for rotor in enigma['rotors']:
