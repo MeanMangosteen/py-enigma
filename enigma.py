@@ -6,6 +6,8 @@ import json
 import string
 import argparse
 
+# TODO: delete selected rotors, this should be determined by args
+selected_rotors = ['I', 'II', 'III']
 enigma = {}  # this is the machine
 # TODO: rotors argument
 # TODO: ring setting argument
@@ -21,8 +23,13 @@ def setup():
     reflectors = json.load(reflectors_json)
 
     # TODO: store selected rotors in a list in 'enigma'
-    enigma['rotors'] = rotors
+    enigma['all_rotors'] = rotors
     enigma['reflectors'] = reflectors
+    enigma['rotors'] = []
+    for rotor in selected_rotors:
+        enigma['rotors'].append(enigma['all_rotors'][rotor])
+
+    enigma['plugboard'] = ''
 
     set_ring_setting()
 
@@ -37,12 +44,13 @@ def rotor_encrypt(letter, rotor_list, reverse=False):
     for rotor in rotor_list:
         # get rotor map depending on direction of signal
         if reverse:
-            rotor_map = enigma['rotors'][rotor]['wires_reverse']
+            rotor_map = rotor['wires_reverse']
         else:
-            rotor_map = enigma['rotors'][rotor]['wires_forward']
+            rotor_map = rotor['wires_forward']
         # update the letter to encrypt for next rotor
+        print("letter before: " + letter)
         letter = rotor_map[letter]
-        print(letter)
+        print("letter after: " + letter)
     # letter is now e
     return letter
 
@@ -53,7 +61,13 @@ def turn_rotors(rotor_list):
     last_element = len(rotor_list) - 1
     first_element = 0
 
+    # initialise by setting all rotors not to turn
+    # except rightmost rotor, this always turns
+    for rotor in rotor_list:
+        rotor['turn'] = False;
+    rotor_list[-1]['turn'] = True  # rightmost rotor always turns
     # mark rotors which need to be turned
+
     for i in range(last_element, first_element, -1):  # '-1' mean negative step
         current_rotor = rotor_list[i]
         rotor_leftof = rotor_list[i - 1]  # the rotor leftof current rotor
@@ -64,15 +78,18 @@ def turn_rotors(rotor_list):
 
     # turn the marked rotors
     for rotor in rotor_list:
-        if rotor['turn']:
+        if 'turn' in rotor and rotor['turn']:
+            print('we are turning a rotor')
             # turn the rotor letter by one
             rotor['position'] = shift_letter(rotor['position'], 1)
 
-    # reset all rotors for next key press
-    # no rotor is set to 'turn' except rightmost
+
+    # TODO: delete, below is for debugging purposes
+    print ("Rotor settings are:")
     for rotor in rotor_list:
-        rotor['turn'] = False;
-    rotor_list[-1]['turn'] = True  # rightmost rotor always turns
+        print(rotor['position'] + " ", end='')
+    print()
+
 
 # TODO: throw exception if letter not with 'A' and 'Z'
 def shift_letter(letter, num_shifts):
@@ -86,8 +103,9 @@ def shift_letter(letter, num_shifts):
     return letter
 
 
+
 def set_ring_setting():
-    for rotor in enigma['rotors'].keys():
+    for rotor in enigma['rotors']:
         rotor['setting'] = 'A'
         rotor['position'] = 'A'
 
@@ -96,10 +114,10 @@ def set_ring_setting():
 
 if __name__ == "__main__":
     setup()
-    turn_rotors(enigma[''])
-    a = rotor_encrypt('A', ['III', 'II', 'I'])
+    turn_rotors(enigma['rotors'])
+    a = rotor_encrypt('A', list(reversed(enigma['rotors'])))
     print("now revesring")
-    a = rotor_encrypt('T', ['I', 'II', 'III'], reverse=True)
+    a = rotor_encrypt('T', enigma['rotors'], reverse=True)
 # TODO: with 3 rotors
 # TODO: with reflector
 # TODO: with inverse encryption
