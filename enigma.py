@@ -149,7 +149,7 @@ def get_offsets(rotor):
 
 if __name__ == "__main__":
     output = ""
-    message = input("Enter Text! \n>> ")
+    message = input("Enter Text! \n>> ").upper()
     setup()
     for letter in message:
         turn_rotors(enigma['rotors'])

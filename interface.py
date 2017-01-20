@@ -78,9 +78,9 @@ class Menu(ttk.Frame):
         print(self.plugboard_str.get())
         self.final_settings['rotors'] = self.selected_rotors
         self.final_settings['reflector'] = self.selected_reflector
-        self.final_settings['ring_setting'] = self.ring_setting_str.get()
-        self.final_settings['initial_position'] = self.initial_pos_str.get()
-        self.final_settings['plugboard'] = self.plugboard_str.get()
+        self.final_settings['ring_setting'] = self.ring_setting_str.get().upper()
+        self.final_settings['initial_position'] = self.initial_pos_str.get().upper()
+        self.final_settings['plugboard'] = self.plugboard_str.get().upper()
 
         settings_file = open('settings.json', 'w')
         json.dump(self.final_settings, settings_file)
