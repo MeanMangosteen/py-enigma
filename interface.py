@@ -24,6 +24,10 @@ class Menu(ttk.Frame):
         self.ring_setting_str = StringVar()
         self.initial_pos_str = StringVar()
         self.plugboard_str = StringVar()
+        self.selected_rotors_str = StringVar()
+        self.selected_rotors_str.set("Selected Rotors: ")
+        self.selected_reflector_str = StringVar()
+        self.selected_reflector_str.set("Selected Reflector: ")
 
         self.final_settings = {}
 
@@ -63,13 +67,21 @@ class Menu(ttk.Frame):
 
         self.start_btn = ttk.Button(self.unselected_rotors, text='Start', command=lambda: self.start()).grid(column=6, row=4, columnspan=2)
 
+        self.selected_rotors_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_rotors_str).grid(column=0, columnspan=2, row=6, pady=10)
+        self.selected_reflector_text = ttk.Label(self.unselected_rotors, textvariable=self.selected_reflector_str).grid(column=0, columnspan=2, row=7, pady=10)
 
     def reflector_click(self, refl):
         self.selected_reflector = refl
+        text = "Selected Reflector: " + refl
+        self.selected_reflector_str.set(text)
         print(self.selected_reflector)
 
     def rotor_click(self, i):
         self.selected_rotors.append(self.rotor_buttons[i]['text'])
+        text = "Selected Rotors: "
+        for rotor in self.selected_rotors:
+            text += rotor + " "
+        self.selected_rotors_str.set(text)
         print(self.selected_rotors)
 
     def start(self):
